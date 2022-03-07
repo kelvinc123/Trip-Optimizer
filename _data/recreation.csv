@@ -1,0 +1,9 @@
+name,rating,num_reviewer,cost,location_x,location_y,time_spent
+Universal Studio,4.9,2000,100,75,4,9
+Griffith Park,4.5,1230,0,46,20,1
+Disneyland,5.0,10000,100,75,9,9
+Hollywood,3.8,580,0,13,3,3
+The Getty Center,4.2,1000,20,53,39,2
+Petersen Automotive Museum,5.0,800,25,49,41,2
+Santa Monica,3.0,300,0,17,72,3
+The Broad,4.2,1500,0,91,79,1
