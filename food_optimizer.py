@@ -95,7 +95,7 @@ class FoodOptimizer:
             print("\tDone.")
             print("\tRunning solver...")
 
-        opt = SolverFactory("glpk")
+        opt = SolverFactory("cplex")
         opt.solve(model) # This runs the solver
         
         if verbose:
@@ -107,7 +107,7 @@ class FoodOptimizer:
 
     def __get_selected_index(self):
         '''
-        Helper function to get selected decision variable index
+        Helper function to get selected decision variable (restaurant) index
         '''
         if not self.model:
             return
@@ -121,7 +121,11 @@ class FoodOptimizer:
 
     def filter_selected(self, verbose=True):    
         '''
-        Function to filter selected variable from pyomo model result
+        Function to filter selected variable (restaurants) from the model result
+
+        Input:
+            verbose (optional): bool
+                true to print the process
         '''
         if not self.model:
             print("Model hasn't been solved!!")

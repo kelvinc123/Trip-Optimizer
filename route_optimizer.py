@@ -229,11 +229,11 @@ class SingleSourceRouteOptimizer:
 
         return cost_list
     
-    def plot_map(self):
+    def plot_map(self, size=(10,6)):
         '''
         Function to plot route map
         '''
-        fig, ax = plt.subplots(1, 1, figsize=(10,6))
+        fig, ax = plt.subplots(1, 1, figsize=size)
         ax = sns.scatterplot(
             x=[self.cur_loc[0]],
             y=[self.cur_loc[1]],
@@ -279,7 +279,18 @@ class SingleSourceRouteOptimizer:
                     self.spots_df.loc[arc[0], 'location_y'],
                     self.spots_df.loc[arc[1], 'location_y']
                     ]
+                x_arrow_pos = np.sum(x) / 2
+                y_arrow_pos = np.sum(y) / 2
+                x_arrow_dir = x[1] - x[0]
+                y_arrow_dir = y[1] - y[0]
                 ax = sns.lineplot(x=x, y=y, color = "black", linewidth=0.5)
+                ax.annotate(
+                    "",
+                    xytext=(x_arrow_pos, y_arrow_pos),
+                    xy=(x_arrow_pos + 0.001 * x_arrow_dir, y_arrow_pos + 0.001 * y_arrow_dir),
+                    arrowprops={"arrowstyle": "->", "color": "black"},
+                    size=20
+                )
 
         ax.set_title("Trip Plan")
         ax.legend()

@@ -7,7 +7,7 @@
 \usepackage{fullpage,enumitem,amssymb,amsmath,xcolor,cancel,gensymb,hyperref,graphicx}
 \usepackage{tabto}
 \usepackage{indentfirst}
-\usepackage{algorithm, algpseudocode}
+\usepackage{algorithm}
 \newcommand\tabb{\tabto{10em}}
 \newcommand\stabb{\tabto{3em}}
 \newcommand\idt{\hspace{2mm}}
@@ -23,7 +23,7 @@
 		\line(1,0){400}
 	\end{center}
 	
-	The trip planner optimizer maximize the expected satisfaction while minimizing the total distance of the trip. It uses three hybrid optimization method: Integer Programming, Constraint Programming, and Network Flow. The required data are the restaurant data and the recreational spots data. \\
+	The trip planner optimizer maximize the expected satisfaction while minimizing the total distance of the trip. It uses two hybrid optimization methods: Integer Programming and Network Flow. The required data are the restaurant data and the recreational spots data. \\
 	
 	One of the methods used is \textbf{Scaled Optimization}. Since there's no need to have huge amount of data for testing the algorithm back and forth, the fake data is generated. This small data will be used to evaluate the model result and once the result is acceptable, the model can be fed with a larger size data. \\
 	
@@ -135,7 +135,7 @@
 			max & \sum_{i \in R} s_{i}X_{i} & & & (1) \\
 			s.t. & \sum_{i \in R} c_{i}X_{i} \le BUDGET & \forall i \in R & & (2) \\
 			& \sum_{i \in R} t_{i}X_{i} \le 9 (DAYS) & \forall i \in F & & (3) \\
-			& \sum_{i \in R} X_{i} = 3 (DAYS) & \forall i \in F & & (4) \\
+			& \sum_{i \in R} X_{i} \le 2 (DAYS) & \forall i \in F & & (4) \\
 			& X_{i} \in \mathbb{B} & \forall i \in F & & (5)
 		\end{aligned}
 		\]
@@ -148,7 +148,7 @@
 		
 		Equation $(3)$ is the constraint of the total time spent on recreational spots can't exceed 9 hours per day.
 		
-		Equation $(4)$ is to ensure that we don't go to more than $3$ places each day on average because we will be exhausted.
+		Equation $(4)$ is to ensure that we don't go to more than $2$ places each day on average because we will be exhausted.
 		
 		Finally, each decision variable is a binary variable which represents whether the recreational spot is selected or not. It is given in equation $(5)$.
 		
@@ -202,15 +202,17 @@
 			min & \sum_{i, j \in A} dist_{ij}X_{ij} & & & (1) \\
 			s.t. & \sum_{j \in S, i \ne j} X_{ij} = 1 & \forall i \in N & & (2) \\
 			& \sum_{i \in S, i \ne j} X_{ij} = 1 & \forall j \in N & & (3) \\
-			& X_{ij} \implies CUMTIME_{i} + time_{j} = CUMTIME_{j} & \forall i, j \in A, i \ne 0, j \ne 0 & & (4) \\
-			& time_{i} \le CUMTIME_{i} \le 12 & \forall i \in N & & (5) \\
-			& X_{ij} \implies CUMNUMEATS_{i} + isRestaurant_{j} = CUMNUMEATS_{j} & \forall i, j \in A, i \ne 0, j \ne 0 & & (6) \\
-			& CUMNUMEATS_{i} \le 1 & \forall i \in N & & (7) \\
-			& \sum_{i \in F} X_{ik} = numDays & & & (8) \\
-			& 1 - X_{ik} \implies CUMTIME_{i} \le maxHourToLunch + time_{i} & \forall i \in F & & (9) \\
-			& X_{ij} \in \mathbb{B} & \forall i, j \in A & & (10) \\
-			& CUMTIME_{i} \in \mathbb{R} & \forall i \in N& & (11) \\
-			& CUMNUMEATS_{i} \in \mathbb{N} & \forall i \in N& & (12)
+			& \sum_{i \in N} X_{ik} = numDays & & & (4) \\
+			& \sum_{j \in N} X_{kj} = numDays & & & (5) \\
+			& X_{ij} \implies CUMTIME_{i} + time_{j} = CUMTIME_{j} & \forall i, j \in A, i \ne 0, j \ne 0 & & (6) \\
+			& time_{i} \le CUMTIME_{i} \le 12 & \forall i \in N & & (7) \\
+			& X_{ij} \implies CUMNUMEATS_{i} + isRestaurant_{j} = CUMNUMEATS_{j} & \forall i, j \in A, i \ne 0, j \ne 0 & & (8) \\
+			& CUMNUMEATS_{i} \le 1 & \forall i \in N & & (9) \\
+			& \sum_{i \in F} X_{ik} = numDays & & & (10) \\
+			& 1 - X_{ik} \implies CUMTIME_{i} \le maxHourToLunch + time_{i} & \forall i \in F & & (11) \\
+			& X_{ij} \in \mathbb{B} & \forall i, j \in A & & (12) \\
+			& CUMTIME_{i} \in \mathbb{R} & \forall i \in N& & (13) \\
+			& CUMNUMEATS_{i} \in \mathbb{N} & \forall i \in N& & (14)
 		\end{aligned}
 		\]
 		
@@ -218,44 +220,43 @@
 		
 		Equation $(1)$ is our objective function which is minimizing total distance.
 		
-		Equation $(2)$ and $(3)$ is the constraint of the total outflow and inflow for all nodes  repectively must equals to one. This ensures that each location will be visited exactly once (except the lodging).
+		Equations $(2)$ and $(3)$ are the constraints of the total outflow and inflow for all nodes  repectively must equals to one. This ensures that each location will be visited exactly once (except the lodging).
 		
-		Equation $(4)$ is the constraint for the CUMTIME decision variable which is the total cumulative time spent after visiting a location. It uses logical operation.
+		Equations $(4)$ and $(5)$ are the constraints for the number of days trip.
 		
-		Equation $(5)$ is the lower bound and upper bound for CUMTIME. The lower bound is the time spent for that location, and the upper bound is restricts that the total time spent in a day. Both equation $(4)$ and $(5)$ are used to prevent subtour.
+		Equation $(6)$ is the constraint for the CUMTIME decision variable which is the total cumulative time spent after visiting a location. It uses logical operation.
 		
-		Equation $(6)$ and $(7)$ are to prevent visiting restaurants more than twice a day (lunch and dinner).
+		Equation $(7)$ is the lower bound and upper bound for CUMTIME. The lower bound is the time spent for that location, and the upper bound is restricts that the total time spent in a day. Both equation $(6)$ and $(7)$ are used to prevent subtour.
 		
-		Equation $(8)$ is the constraint to ensure that we're not visiting any other places after dinner.
+		Equation $(8)$ and $(9)$ are to prevent visiting restaurants more than twice a day (lunch and dinner).
 		
-		Equation $(9)$ is to prevent late lunch, which means that if a restaurant is not selected during dinner time, than the cumulative time after eating at the restaurant must not exceed the $maxHourToLunch$ variable plus time spent for eating. Since the equation will be non linear, the constraint is substitute with $CUMTIME_{i} \le (12X[i, k]) + (maxHourToLunch + time_{i})$ which has the same result.
+		Equation $(10)$ is the constraint to ensure that we're not visiting any other places after dinner.
 		
-		The Decision variables $X_{ij}$ are binary variables which represents the selected route of our trip. It is given in equation $(10)$.
+		Equation $(11)$ is to prevent late lunch, which means that if a restaurant is not selected during dinner time, than the cumulative time after eating at the restaurant must not exceed the $maxHourToLunch$ variable plus time spent for eating. Since the equation will be non linear, the constraint is substitute with $CUMTIME_{i} \le (12X[i, k]) + (maxHourToLunch + time_{i})$ which has the same result.
 		
-		The helper decision variables $CUMTIME_{i}$ and $CUMNUMEATS_{i}$ have a non negative real domain and non negative integer respectively, which is represented in equation $(11)$ and $(12)$
+		The Decision variables $X_{ij}$ are binary variables which represents the selected route of our trip. It is given in equation $(12)$.
+		
+		The helper decision variables $CUMTIME_{i}$ and $CUMNUMEATS_{i}$ have a non negative real domain and non negative integer respectively, which is represented in equation $(13)$ and $(14)$
 		
 	\end{itemize}
 
 	\section*{Further Discussion}
 
-	In terms of scalability, there'll be a significant reduction of the algorithm speed when fed with a bigger dataset. One of the potential alternatives of integer programming is the heuristic method. There are several reasons why it is desirable: 
+	In terms of scalability, there'll be a significant reduction of the algorithm speed when fed with a bigger dataset. There are some potetential alternatives for solving the sub-problems (satisfaction optimization) such as \textbf{Dynamic Programming} and \textbf{Metaheuristic Search}. Since the sub-problems are modified knapsack problem, we can easily substitute the Integer Programming with the \textbf{Dynamic Programming} and still get the optimal solutions. The more desirable method is \textbf{Metaheuristic Search} which will be implemented in the future. There are several reasons why it is desirable: 
 	
 	\begin{itemize}
 		\item It's significantly faster than the MILP method
 		\item The randomness output from heuristic makes the trip unpredictable (and full of surprise) while maintaining the near optimality of satisfaction
+		\item The randomness also makes the app reusable since each result will be new on every run.
 	\end{itemize}
-
-	The complexity for the algorithm is in polynomial time since all methods use MILP method to solve the problem. 
 	
-	It is always possible to change the optimal solution by tweaking the problem parameters. Several constants that could highly impact the solutions are:
+	We can also change the optimal solution by tweaking the problem parameters. Several constants that could highly impact the solutions are:
 	
 	\begin{itemize}
 		\item maxTimeSpentPerDay: which is the constant 12 in the master route optimization problem (5). This constant represents the number of allowable time spent on each day
 		\item maxHourToLunch: the data for master route optimization problem. This number is the maximum allowable hour that can spent before lunch. Changing this parameter will bring lots of changes to the optimal routing solution
 	\end{itemize}
 	
-	
-	
-	It is also guaranteed to converge to the optimal solution using the method described above. The only requirement is the feasibility of the solution. 
+	It is also guaranteed to converge to the optimal solution using the method described above. The only requirement is the feasibility of the solution (budget, number of days, etc).
 
 \end{document}

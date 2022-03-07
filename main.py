@@ -9,13 +9,13 @@ from route_optimizer import SingleSourceRouteOptimizer
 ################
 #  Input Data  #
 ################
-num_days = 3
-num_people = 1
-food_budget = 250
-lodging_budget = 0
-recreation_budget = 250
-cur_loc_x = 50
-cur_loc_y = 50
+num_days = 4
+num_people = 2
+food_budget = 400
+# lodging_budget = 0
+recreation_budget = 300
+cur_loc_x = 20
+cur_loc_y = 70
 
 # Read data
 DATA_PATH = "_data"

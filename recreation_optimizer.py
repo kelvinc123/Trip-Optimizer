@@ -21,6 +21,7 @@ class RecreationOptimizer:
 
         # Constants
         self.MAX_HOURS_PER_DAY = 9
+        self.MAX_REC_PER_DAY_ON_AVG = 2
 
         # Input data
         self.recreation_df = recreation_df
@@ -42,7 +43,7 @@ class RecreationOptimizer:
     
     def __three_places_rule(self, model):
         # Constraint on no more than three places a day on average
-        return sum(model.SELECT[i] for i in model.i) <= 3
+        return sum(model.SELECT[i] for i in model.i) <= (model.days * self.MAX_REC_PER_DAY_ON_AVG)
 
     def SolveUsingPyomo(self, verbose=True):
         '''
@@ -106,7 +107,7 @@ class RecreationOptimizer:
             print("\tDone.")
             print("\tRunning solver...")
 
-        opt = SolverFactory("glpk")
+        opt = SolverFactory("cplex")
         opt.solve(model) # This runs the solver
         if verbose:
             print("Done optimizing recreational spot choices.")
