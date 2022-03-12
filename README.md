@@ -22,7 +22,7 @@ To install the requirements, follow these steps:
     1. On Windows: `.\venv\Scripts\activate`
         * Note that if there's an error in execution of scripts, run `Set-ExecutionPolicy Unrestricted -Scope Process` before activating environment.
     2. On Mac: `source venv/bin/activate`
-3. Install the packages from *requirements.txt*: `pip install requirements.txt`
+3. Install the packages from *requirements.txt*: `pip install -r requirements.txt`
 
 ## Additional Comments
 The current data are hand-generated data, they can be substituted with the real data as long as the required columns are available. The variables *location_x* and *location_y* are  randomly generated from 0 to 100. These variables can be substituted with the geospatial data (*latitute* and *longitude*). To choose the restaurants and recreational spots, the new satisfaction metric is created by multiplying rating with the log of number reviewer. 
