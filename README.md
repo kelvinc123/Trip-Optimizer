@@ -15,6 +15,10 @@ Columns for recreations data: (*name*, *rating*, *num_reviewer*, *cost*, *locati
 ## Run the Program
 To run the program, use *main.py* scripts or open the *Trip Optimizer.ipynb* notebook on jupyter.
 
+Sample result:
+
+![Plot result](https://github.com/kelvinc123/Trip-Optimizer/blob/main/sample_res.png?raw=true)
+
 ## Requirements
 To install the requirements, follow these steps:
 1. Create new virtual environment named *venv* (it's on the gitignore): `python -m venv venv`
